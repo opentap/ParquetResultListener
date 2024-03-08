@@ -33,6 +33,8 @@ namespace OpenTap.Plugins.Parquet
             Schema = schema;
             _stream = writeStream;
             _writer = new ParquetWriter(Schema, _stream);
+            _writer.CompressionMethod = ParquetResultListener.CompressionMethod;
+            _writer.CompressionLevel = ParquetResultListener.CompressionLevel;
             _dataCache = schema.GetDataFields().ToDictionary(field => field, field => new ArrayList());
             Options = options ?? new ParquetFileOptions();
         }

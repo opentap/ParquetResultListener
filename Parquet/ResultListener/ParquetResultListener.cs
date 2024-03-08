@@ -1,4 +1,5 @@
-﻿using Parquet.Data;
+﻿using Parquet;
+using Parquet.Data;
 using Parquet.Data.Rows;
 using Parquet.Extensions;
 using System;
@@ -16,9 +17,16 @@ namespace OpenTap.Plugins.Parquet
         private readonly Dictionary<Guid, TestStepRun> _guidToStepRuns = new Dictionary<Guid, TestStepRun>();
         private readonly HashSet<Guid> _hasWrittenParameters = new HashSet<Guid>();
 
-        [Display("File path", "The file path of the parquet file(s). Can use <ResultType> to have one file per result type.")]
+        [Display("File path1", "The file path of the parquet file(s). Can use <ResultType> to have one file per result type.")]
         [FilePath(FilePathAttribute.BehaviorChoice.Save)]
         public MacroString FilePath { get; set; } = new MacroString() { Text = "Results/<TestPlanName>.<Date>/<ResultType>.parquet" };
+
+        public static CompressionMethod CompressionMethod = CompressionMethod.None;
+        [Display(nameof(CompressionMethod))]
+        public CompressionMethod compressionMethod { get => CompressionMethod; set => CompressionMethod = value; }
+        public static int CompressionLevel = -1;
+        [Display(nameof(compressionLevel))]
+        public int compressionLevel { get => CompressionLevel; set => CompressionLevel = value; }
 
         public ParquetResultListener()
         {
