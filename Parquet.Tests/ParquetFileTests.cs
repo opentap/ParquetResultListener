@@ -134,6 +134,30 @@ namespace Parquet.Tests
         }
 
         [Test]
+        public void CreateMetadata()
+        {
+            var builder = new SchemaBuilder();
+            var schema = builder.ToSchema();
+
+            using var stream = new MemoryStream();
+            var stepGuid = Guid.NewGuid();
+            var parentGuid = Guid.NewGuid();
+            using (var file = new ParquetFile(schema, stream, new ParquetFileOptions() { CloseStream = false }))
+            {
+                file.AddRows(null, null, null, "ResultName", stepGuid, parentGuid);
+                file.AddMetadata("Custom", "Metadata");
+            }
+
+            using (var reader = new ParquetReader(stream))
+            {
+                Assert.That(reader.CustomMetadata["SchemaVersion"], Is.EqualTo("1.0.0.0"));
+                Assert.That(reader.CustomMetadata["Custom"], Is.EqualTo("Metadata"));
+                Assert.That(DateTime.TryParse(reader.CustomMetadata["Time"], out _), Is.True);
+                Assert.That(reader.CustomMetadata["OpenTapParquetVersion"], Is.EqualTo("1.0.0.0"));
+            }
+        }
+        
+        [Test]
         public void FilesWillDisposeWithInvalidCacheTest()
         {
             var table = new ResultTable(
