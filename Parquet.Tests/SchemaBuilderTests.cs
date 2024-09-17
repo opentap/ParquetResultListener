@@ -2,6 +2,7 @@ using NUnit.Framework;
 using OpenTap;
 using OpenTap.Plugins.Parquet;
 using Parquet.Data;
+using Parquet.Extensions;
 
 namespace Parquet.Tests
 {
@@ -69,7 +70,7 @@ namespace Parquet.Tests
         {
             var builder = new SchemaBuilder();
             var run = new ParameterTestRun();
-            builder.AddParameters(FieldType.Step, run);
+            builder.AddStepParameters(run.Parameters.Select(p => (p.Value, p.Group, p.Name)));
             var actual = builder.ToSchema();
             return actual;
         }
@@ -97,7 +98,7 @@ namespace Parquet.Tests
         {
             var builder = new SchemaBuilder();
             var run = new ParameterTestRun();
-            builder.AddParameters(FieldType.Plan, run);
+            builder.AddPlanParameters(run.Parameters.Select(p => (p.Value, p.Group, p.Name)));
             var actual = builder.ToSchema();
             return actual;
         }
